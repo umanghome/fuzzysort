@@ -16,12 +16,17 @@ USAGE:
 import fastpriorityqueue from './internals/fastpriorityqueue';
 import { isObj, getValue } from './internals/utils';
 import { getOptions } from './internals/defaults';
+import {
+  prepare,
+  prepareNextBeginningIndexes,
+  prepareSlow,
+  prepareSearch,
+} from './internals/prepare';
 
 function fuzzysortNew(instanceOptions) {
   instanceOptions = getOptions(instanceOptions);
 
   var fuzzysort = {
-
     single: function(search, target, options) {
       if(!search) return null
       if(!isObj(search)) search = fuzzysort.getPreparedSearch(search)
@@ -274,18 +279,9 @@ function fuzzysortNew(instanceOptions) {
       return highlighted
     },
 
-    prepare: function(target) {
-      if(!target) return
-      return {target:target, _targetLowerCodes:fuzzysort.prepareLowerCodes(target), _nextBeginningIndexes:null, score:null, indexes:null, obj:null} // hidden
-    },
-    prepareSlow: function(target) {
-      if(!target) return
-      return {target:target, _targetLowerCodes:fuzzysort.prepareLowerCodes(target), _nextBeginningIndexes:fuzzysort.prepareNextBeginningIndexes(target), score:null, indexes:null, obj:null} // hidden
-    },
-    prepareSearch: function(search) {
-      if(!search) return
-      return fuzzysort.prepareLowerCodes(search)
-    },
+    prepare: prepare,
+    prepareSlow: prepareSlow,
+    prepareSearch: prepareSearch,
 
 
 
@@ -297,10 +293,10 @@ function fuzzysortNew(instanceOptions) {
 
 
     getPrepared: function(target) {
-      if(target.length > 999) return fuzzysort.prepare(target) // don't cache huge targets
+      if(target.length > 999) return prepare(target) // don't cache huge targets
       var targetPrepared = preparedCache.get(target)
       if(targetPrepared !== undefined) return targetPrepared
-      targetPrepared = fuzzysort.prepare(target)
+      targetPrepared = prepare(target)
       preparedCache.set(target, targetPrepared)
       return targetPrepared
     },
@@ -365,7 +361,7 @@ function fuzzysortNew(instanceOptions) {
       var matchesStrictLen = 0
 
       var nextBeginningIndexes = prepared._nextBeginningIndexes
-      if(nextBeginningIndexes === null) nextBeginningIndexes = prepared._nextBeginningIndexes = fuzzysort.prepareNextBeginningIndexes(prepared.target)
+      if(nextBeginningIndexes === null) nextBeginningIndexes = prepared._nextBeginningIndexes = prepareNextBeginningIndexes(prepared.target)
       var firstPossibleI = targetI = matchesSimple[0]===0 ? 0 : nextBeginningIndexes[matchesSimple[0]-1]
 
       // Our target string successfully matched all characters in sequence!
@@ -448,7 +444,7 @@ function fuzzysortNew(instanceOptions) {
       var matchesStrictLen = 0
 
       var nextBeginningIndexes = prepared._nextBeginningIndexes
-      if(nextBeginningIndexes === null) nextBeginningIndexes = prepared._nextBeginningIndexes = fuzzysort.prepareNextBeginningIndexes(prepared.target)
+      if(nextBeginningIndexes === null) nextBeginningIndexes = prepared._nextBeginningIndexes = prepareNextBeginningIndexes(prepared.target)
       var firstPossibleI = targetI = matchesSimple[0]===0 ? 0 : nextBeginningIndexes[matchesSimple[0]-1]
 
       // Our target string successfully matched all characters in sequence!
@@ -492,46 +488,6 @@ function fuzzysortNew(instanceOptions) {
 
         return prepared
       }
-    },
-
-    prepareLowerCodes: function(str) {
-      var strLen = str.length
-      var lowerCodes = [] // new Array(strLen)    sparse array is too slow
-      var lower = str.toLowerCase()
-      for(var i = 0; i < strLen; ++i) lowerCodes[i] = lower.charCodeAt(i)
-      return lowerCodes
-    },
-    prepareBeginningIndexes: function(target) {
-      var targetLen = target.length
-      var beginningIndexes = []; var beginningIndexesLen = 0
-      var wasUpper = false
-      var wasAlphanum = false
-      for(var i = 0; i < targetLen; ++i) {
-        var targetCode = target.charCodeAt(i)
-        var isUpper = targetCode>=65&&targetCode<=90
-        var isAlphanum = isUpper || targetCode>=97&&targetCode<=122 || targetCode>=48&&targetCode<=57
-        var isBeginning = isUpper && !wasUpper || !wasAlphanum || !isAlphanum
-        wasUpper = isUpper
-        wasAlphanum = isAlphanum
-        if(isBeginning) beginningIndexes[beginningIndexesLen++] = i
-      }
-      return beginningIndexes
-    },
-    prepareNextBeginningIndexes: function(target) {
-      var targetLen = target.length
-      var beginningIndexes = fuzzysort.prepareBeginningIndexes(target)
-      var nextBeginningIndexes = [] // new Array(targetLen)     sparse array is too slow
-      var lastIsBeginning = beginningIndexes[0]
-      var lastIsBeginningI = 0
-      for(var i = 0; i < targetLen; ++i) {
-        if(lastIsBeginning > i) {
-          nextBeginningIndexes[i] = lastIsBeginning
-        } else {
-          lastIsBeginning = beginningIndexes[++lastIsBeginningI]
-          nextBeginningIndexes[i] = lastIsBeginning===undefined ? targetLen : lastIsBeginning
-        }
-      }
-      return nextBeginningIndexes
     },
 
     cleanup: cleanup,
