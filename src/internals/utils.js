@@ -2,13 +2,25 @@
 // prop = 'key1.key2'        10ms
 // prop = ['key1', 'key2']   27ms
 export function getValue(obj, prop) {
-  var tmp = obj[prop];
-  if (tmp !== undefined) return tmp;
-  var segs = prop;
-  if (!Array.isArray(prop)) segs = prop.split('.');
-  var len = segs.length;
-  var i = -1;
-  while (obj && ++i < len) obj = obj[segs[i]];
+  const tmp = obj[prop];
+  
+  if (tmp !== undefined) {
+    return tmp;
+  }
+
+  let segs = prop;
+
+  if (!Array.isArray(prop)) {
+    segs = prop.split('.');
+  }
+
+  const len = segs.length;
+
+  let i = -1;
+  while (obj && ++i < len) {
+    obj = obj[segs[i]];
+  }
+  
   return obj;
 }
 
