@@ -16,12 +16,7 @@ USAGE:
 import fastpriorityqueue from './internals/fastpriorityqueue';
 import { defaultScoreFn, isObj, getValue } from './internals/utils';
 
-// UMD (Universal Module Definition) for fuzzysort
-;(function(root, UMD) {
-  if(typeof define === 'function' && define.amd) define([], UMD)
-  else if(typeof module === 'object' && module.exports) module.exports = UMD()
-  else root.fuzzysort = UMD()
-})(this, function UMD() { function fuzzysortNew(instanceOptions) {
+function fuzzysortNew(instanceOptions) {
 
   var fuzzysort = {
 
@@ -567,8 +562,7 @@ function cleanup() { preparedCache.clear(); preparedSearchCache.clear(); matches
 
 var q = fastpriorityqueue() // reuse this, except for async, it needs to make its own
 
-return fuzzysortNew()
-}) // UMD
+export default fuzzysortNew();
 
 // TODO: (performance) wasm version!?
 
