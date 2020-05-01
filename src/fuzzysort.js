@@ -13,6 +13,8 @@ USAGE:
   // <b>F</b>uzzy <b>S</b>earch
 */
 
+import fastpriorityqueue from './internals/fastpriorityqueue';
+
 // UMD (Universal Module Definition) for fuzzysort
 ;(function(root, UMD) {
   if(typeof define === 'function' && define.amd) define([], UMD)
@@ -586,8 +588,6 @@ function getValue(obj, prop) {
 
 function isObj(x) { return typeof x === 'object' } // faster as a function
 
-// Hacked version of https://github.com/lemire/FastPriorityQueue.js
-var fastpriorityqueue=function(){var r=[],o=0,e={};function n(){for(var e=0,n=r[e],c=1;c<o;){var f=c+1;e=c,f<o&&r[f].score<r[c].score&&(e=f),r[e-1>>1]=r[e],c=1+(e<<1)}for(var a=e-1>>1;e>0&&n.score<r[a].score;a=(e=a)-1>>1)r[e]=r[a];r[e]=n}return e.add=function(e){var n=o;r[o++]=e;for(var c=n-1>>1;n>0&&e.score<r[c].score;c=(n=c)-1>>1)r[n]=r[c];r[n]=e},e.poll=function(){if(0!==o){var e=r[0];return r[0]=r[--o],n(),e}},e.peek=function(e){if(0!==o)return r[0]},e.replaceTop=function(o){r[0]=o,n()},e};
 var q = fastpriorityqueue() // reuse this, except for async, it needs to make its own
 
 return fuzzysortNew()
