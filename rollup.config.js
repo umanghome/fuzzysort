@@ -3,7 +3,7 @@ import pkg from './package.json';
 export default [
   // browser-friendly UMD build
   {
-    input: 'fuzzysort.js',
+    input: 'src/fuzzysort.js',
     output: {
       name: 'howLongUntilLunch',
       file: pkg.browser,
@@ -18,7 +18,7 @@ export default [
   // an array for the `output` option, where we can specify
   // `file` and `format` for each target)
   {
-    input: 'fuzzysort.js',
+    input: 'src/fuzzysort.js',
     external: ['ms'],
     output: [
       { file: pkg.main, format: 'cjs' },
