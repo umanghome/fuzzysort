@@ -14,6 +14,7 @@ USAGE:
 */
 
 import fastpriorityqueue from './internals/fastpriorityqueue';
+import { defaultScoreFn, isObj, getValue } from './internals/utils';
 
 // UMD (Universal Module Definition) for fuzzysort
 ;(function(root, UMD) {
@@ -562,31 +563,7 @@ var preparedSearchCache = new Map()
 var noResults = []; noResults.total = 0
 var matchesSimple = []; var matchesStrict = []
 function cleanup() { preparedCache.clear(); preparedSearchCache.clear(); matchesSimple = []; matchesStrict = [] }
-function defaultScoreFn(a) {
-  var max = -9007199254740991
-  for (var i = a.length - 1; i >= 0; --i) {
-    var result = a[i]; if(result === null) continue
-    var score = result.score
-    if(score > max) max = score
-  }
-  if(max === -9007199254740991) return null
-  return max
-}
 
-// prop = 'key'              2.5ms optimized for this case, seems to be about as fast as direct obj[prop]
-// prop = 'key1.key2'        10ms
-// prop = ['key1', 'key2']   27ms
-function getValue(obj, prop) {
-  var tmp = obj[prop]; if(tmp !== undefined) return tmp
-  var segs = prop
-  if(!Array.isArray(prop)) segs = prop.split('.')
-  var len = segs.length
-  var i = -1
-  while (obj && (++i < len)) obj = obj[segs[i]]
-  return obj
-}
-
-function isObj(x) { return typeof x === 'object' } // faster as a function
 
 var q = fastpriorityqueue() // reuse this, except for async, it needs to make its own
 
