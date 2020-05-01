@@ -14,9 +14,11 @@ USAGE:
 */
 
 import fastpriorityqueue from './internals/fastpriorityqueue';
-import { defaultScoreFn, isObj, getValue } from './internals/utils';
+import { isObj, getValue } from './internals/utils';
+import { getOptions } from './internals/defaults';
 
 function fuzzysortNew(instanceOptions) {
+  instanceOptions = getOptions(instanceOptions);
 
   var fuzzysort = {
 
@@ -27,16 +29,10 @@ function fuzzysortNew(instanceOptions) {
       if(!target) return null
       if(!isObj(target)) target = fuzzysort.getPrepared(target)
 
-      var allowTypo = options && options.allowTypo!==undefined ? options.allowTypo
-        : instanceOptions && instanceOptions.allowTypo!==undefined ? instanceOptions.allowTypo
-        : true
+      let { allowTypo } = getOptions(instanceOptions, options);
+      
       var algorithm = allowTypo ? fuzzysort.algorithm : fuzzysort.algorithmNoTypo
       return algorithm(search, target, search[0])
-      // var threshold = options && options.threshold || instanceOptions && instanceOptions.threshold || -9007199254740991
-      // var result = algorithm(search, target, search[0])
-      // if(result === null) return null
-      // if(result.score < threshold) return null
-      // return result
     },
 
     go: function(search, targets, options) {
@@ -44,11 +40,8 @@ function fuzzysortNew(instanceOptions) {
       search = fuzzysort.prepareSearch(search)
       var searchLowerCode = search[0]
 
-      var threshold = options && options.threshold || instanceOptions && instanceOptions.threshold || -9007199254740991
-      var limit = options && options.limit || instanceOptions && instanceOptions.limit || 9007199254740991
-      var allowTypo = options && options.allowTypo!==undefined ? options.allowTypo
-        : instanceOptions && instanceOptions.allowTypo!==undefined ? instanceOptions.allowTypo
-        : true
+      let { scoreFn, threshold, limit, allowTypo } = getOptions(instanceOptions, options);
+
       var algorithm = allowTypo ? fuzzysort.algorithm : fuzzysort.algorithmNoTypo
       var resultsLen = 0; var limitedCount = 0
       var targetsLen = targets.length
@@ -57,7 +50,6 @@ function fuzzysortNew(instanceOptions) {
 
       // options.keys
       if(options && options.keys) {
-        var scoreFn = options.scoreFn || defaultScoreFn
         var keys = options.keys
         var keysLen = keys.length
         for(var i = targetsLen - 1; i >= 0; --i) { var obj = targets[i]
@@ -136,12 +128,12 @@ function fuzzysortNew(instanceOptions) {
         var searchLowerCode = search[0]
 
         var q = fastpriorityqueue()
-        var iCurrent = targets.length - 1
-        var threshold = options && options.threshold || instanceOptions && instanceOptions.threshold || -9007199254740991
-        var limit = options && options.limit || instanceOptions && instanceOptions.limit || 9007199254740991
-        var allowTypo = options && options.allowTypo!==undefined ? options.allowTypo
-          : instanceOptions && instanceOptions.allowTypo!==undefined ? instanceOptions.allowTypo
-          : true
+        var iCurrent = targets.length - 1;
+
+        let {
+          threshold, limit, allowTypo, scoreFn,
+        } = getOptions(instanceOptions, options);
+        
         var algorithm = allowTypo ? fuzzysort.algorithm : fuzzysort.algorithmNoTypo
         var resultsLen = 0; var limitedCount = 0
         function step() {
@@ -153,7 +145,6 @@ function fuzzysortNew(instanceOptions) {
 
           // options.keys
           if(options && options.keys) {
-            var scoreFn = options.scoreFn || defaultScoreFn
             var keys = options.keys
             var keysLen = keys.length
             for(; iCurrent >= 0; --iCurrent) { var obj = targets[iCurrent]
