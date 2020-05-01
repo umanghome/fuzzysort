@@ -19,7 +19,7 @@
     "build": "rollup -c",
     "copy-types": "cp src/index.d.ts dist/",
     "dev": "rollup -c -w",
-    "test": "node test.js",
+    "test": "npm run build && node test.js",
     "build:legacy": "uglifyjs fuzzysort.js -m -c -o fuzzysort.min.js"
   },
   "repository": {
