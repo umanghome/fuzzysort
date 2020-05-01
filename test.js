@@ -200,7 +200,7 @@ async function tests() {
 
 
 const isNode = typeof require !== 'undefined' && typeof window === 'undefined'
-if(isNode) fuzzysort = require('./dist/fuzzysort.esm.js')
+if(isNode) fuzzysort = require('./dist/fuzzysort.cjs.js')
 
 // Config
   fuzzysort = fuzzysort.new({
