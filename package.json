@@ -11,13 +11,20 @@
   ],
   "author": "farzher",
   "license": "MIT",
-  "main": "fuzzysort.js",
+  "main": "dist/fuzzysort.cjs.js",
+  "module": "dist/fuzzysort.esm.js",
+  "browser": "dist/fuzzysort.umd.js",
   "scripts": {
+    "build": "rollup -c",
+    "dev": "rollup -c -w",
     "test": "node test.js",
-    "build": "uglifyjs fuzzysort.js -m -c -o fuzzysort.min.js"
+    "build:legacy": "uglifyjs fuzzysort.js -m -c -o fuzzysort.min.js"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/farzher/fuzzysort.git"
+  },
+  "devDependencies": {
+    "rollup": "^2.7.6"
   }
 }
