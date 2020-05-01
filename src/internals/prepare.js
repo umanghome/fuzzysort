@@ -1,3 +1,6 @@
+const preparedCache = new Map();
+const preparedSearchCache = new Map();
+
 function prepareLowerCodes (str) {
   const strLen = str.length;
   const lower = str.toLowerCase();
@@ -98,4 +101,45 @@ export function prepareSearch(search) {
   }
 
   return prepareLowerCodes(search);
+}
+
+export function getPrepared(target) {
+  if (target.length > 999) {
+    return prepare(target); // don't cache huge targets
+  }
+
+  let targetPrepared = preparedCache.get(target);
+
+  if (targetPrepared !== undefined) {
+    return targetPrepared;
+  }
+
+  targetPrepared = prepare(target);
+
+  preparedCache.set(target, targetPrepared);
+
+  return targetPrepared;
+}
+
+export function getPreparedSearch(search) {
+  if (search.length > 999) {
+    return prepareSearch(search); // don't cache huge searches
+  }
+
+  let searchPrepared = preparedSearchCache.get(search);
+
+  if (searchPrepared !== undefined) {
+    return searchPrepared;
+  }
+  
+  searchPrepared = prepareSearch(search);
+
+  preparedSearchCache.set(search, searchPrepared);
+
+  return searchPrepared;
+}
+
+export function clearPreparedCache () {
+  preparedCache.clear();
+  preparedSearchCache.clear();
 }

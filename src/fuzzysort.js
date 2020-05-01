@@ -21,6 +21,9 @@ import {
   prepareNextBeginningIndexes,
   prepareSlow,
   prepareSearch,
+  getPrepared,
+  getPreparedSearch,
+  clearPreparedCache,
 } from './internals/prepare';
 
 function fuzzysortNew(instanceOptions) {
@@ -29,10 +32,10 @@ function fuzzysortNew(instanceOptions) {
   var fuzzysort = {
     single: function(search, target, options) {
       if(!search) return null
-      if(!isObj(search)) search = fuzzysort.getPreparedSearch(search)
+      if(!isObj(search)) search = getPreparedSearch(search)
 
       if(!target) return null
-      if(!isObj(target)) target = fuzzysort.getPrepared(target)
+      if(!isObj(target)) target = getPrepared(target)
 
       let { allowTypo } = getOptions(instanceOptions, options);
       
@@ -63,7 +66,7 @@ function fuzzysortNew(instanceOptions) {
             var key = keys[keyI]
             var target = getValue(obj, key)
             if(!target) { objResults[keyI] = null; continue }
-            if(!isObj(target)) target = fuzzysort.getPrepared(target)
+            if(!isObj(target)) target = getPrepared(target)
 
             objResults[keyI] = algorithm(search, target, searchLowerCode)
           }
@@ -85,7 +88,7 @@ function fuzzysortNew(instanceOptions) {
         for(var i = targetsLen - 1; i >= 0; --i) { var obj = targets[i]
           var target = getValue(obj, key)
           if(!target) continue
-          if(!isObj(target)) target = fuzzysort.getPrepared(target)
+          if(!isObj(target)) target = getPrepared(target)
 
           var result = algorithm(search, target, searchLowerCode)
           if(result === null) continue
@@ -105,7 +108,7 @@ function fuzzysortNew(instanceOptions) {
       } else {
         for(var i = targetsLen - 1; i >= 0; --i) { var target = targets[i]
           if(!target) continue
-          if(!isObj(target)) target = fuzzysort.getPrepared(target)
+          if(!isObj(target)) target = getPrepared(target)
 
           var result = algorithm(search, target, searchLowerCode)
           if(result === null) continue
@@ -158,7 +161,7 @@ function fuzzysortNew(instanceOptions) {
                 var key = keys[keyI]
                 var target = getValue(obj, key)
                 if(!target) { objResults[keyI] = null; continue }
-                if(!isObj(target)) target = fuzzysort.getPrepared(target)
+                if(!isObj(target)) target = getPrepared(target)
 
                 objResults[keyI] = algorithm(search, target, searchLowerCode)
               }
@@ -187,7 +190,7 @@ function fuzzysortNew(instanceOptions) {
             for(; iCurrent >= 0; --iCurrent) { var obj = targets[iCurrent]
               var target = getValue(obj, key)
               if(!target) continue
-              if(!isObj(target)) target = fuzzysort.getPrepared(target)
+              if(!isObj(target)) target = getPrepared(target)
 
               var result = algorithm(search, target, searchLowerCode)
               if(result === null) continue
@@ -214,7 +217,7 @@ function fuzzysortNew(instanceOptions) {
           } else {
             for(; iCurrent >= 0; --iCurrent) { var target = targets[iCurrent]
               if(!target) continue
-              if(!isObj(target)) target = fuzzysort.getPrepared(target)
+              if(!isObj(target)) target = getPrepared(target)
 
               var result = algorithm(search, target, searchLowerCode)
               if(result === null) continue
@@ -289,25 +292,6 @@ function fuzzysortNew(instanceOptions) {
     // Below this point is only internal code
     // Below this point is only internal code
     // Below this point is only internal code
-
-
-
-    getPrepared: function(target) {
-      if(target.length > 999) return prepare(target) // don't cache huge targets
-      var targetPrepared = preparedCache.get(target)
-      if(targetPrepared !== undefined) return targetPrepared
-      targetPrepared = prepare(target)
-      preparedCache.set(target, targetPrepared)
-      return targetPrepared
-    },
-    getPreparedSearch: function(search) {
-      if(search.length > 999) return fuzzysort.prepareSearch(search) // don't cache huge searches
-      var searchPrepared = preparedSearchCache.get(search)
-      if(searchPrepared !== undefined) return searchPrepared
-      searchPrepared = fuzzysort.prepareSearch(search)
-      preparedSearchCache.set(search, searchPrepared)
-      return searchPrepared
-    },
 
     algorithm: function(searchLowerCodes, prepared, searchLowerCode) {
       var targetLowerCodes = prepared._targetLowerCodes
@@ -500,12 +484,13 @@ function fuzzysortNew(instanceOptions) {
 var isNode = typeof require !== 'undefined' && typeof window === 'undefined'
 // var MAX_INT = Number.MAX_SAFE_INTEGER
 // var MIN_INT = Number.MIN_VALUE
-var preparedCache = new Map()
-var preparedSearchCache = new Map()
 var noResults = []; noResults.total = 0
 var matchesSimple = []; var matchesStrict = []
-function cleanup() { preparedCache.clear(); preparedSearchCache.clear(); matchesSimple = []; matchesStrict = [] }
-
+function cleanup() {
+  clearPreparedCache();
+  matchesSimple = [];
+  matchesStrict = [];
+}
 
 var q = fastpriorityqueue() // reuse this, except for async, it needs to make its own
 
