@@ -5,7 +5,7 @@ export default [
   {
     input: 'src/fuzzysort.js',
     output: {
-      name: 'howLongUntilLunch',
+      name: 'fuzzysort',
       file: pkg.browser,
       format: 'umd',
     },
@@ -19,7 +19,6 @@ export default [
   // `file` and `format` for each target)
   {
     input: 'src/fuzzysort.js',
-    external: ['ms'],
     output: [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'es' },
