@@ -32,9 +32,14 @@ export default function go(search, targets, options) {
   // options.keys
   var keys = options.keys;
   var keysLen = keys.length;
+
   for (var i = targetsLen - 1; i >= 0; --i) {
     var obj = targets[i];
-    var objResults = new Array(keysLen);
+    // var objResults = new Array(keysLen);
+    var objResults = {
+      length: keysLen,
+    };
+
     for (var keyI = keysLen - 1; keyI >= 0; --keyI) {
       var key = keys[keyI];
       var target = getValue(obj, key);
@@ -50,8 +55,6 @@ export default function go(search, targets, options) {
 
       objResults[keyI] = algorithm(search, target, searchLowerCode);
     }
-
-    console.log({ objResults });
 
     objResults.obj = obj; // before scoreFn so scoreFn can use it
     var score = scoreFn(objResults);
@@ -70,6 +73,8 @@ export default function go(search, targets, options) {
   if (resultsLen === 0) return noResults;
   var results = new Array(resultsLen);
   for (var i = resultsLen - 1; i >= 0; --i) results[i] = q.poll();
+
+  console.log(results);
 
   return {
     results,
