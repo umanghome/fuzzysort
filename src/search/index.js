@@ -39,6 +39,15 @@ export default function search(term, targets, options) {
   }
 
   const { threshold, limit, algorithm, cache, keys } = getOptions(options);
+
+  if (typeof algorithm !== 'function') {
+    throw new Error('`algorithm` should be a function');
+  }
+
+  if (!Array.isArray(keys) || keys.length === 0) {
+    throw new Error('`keys` should be an array with at least one item');
+  }
+
   const q = fastpriorityqueue();
 
   term = prepareSearch(term);
