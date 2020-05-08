@@ -18,7 +18,7 @@ export default function go(search, targets, options) {
 
   var searchLowerCode = search[0];
 
-  let { scoreFn, threshold, limit, algorithm } = getOptions(options);
+  let { scoreFn, threshold, limit, algorithm, cache } = getOptions(options);
   
   var resultsLen = 0;
   var limitedCount = 0;
@@ -46,8 +46,8 @@ export default function go(search, targets, options) {
         continue;
       }
 
-      if (!isObj(target)) {
-        target = getPrepared(target);
+      if (!isObject(target)) {
+        target = getPrepared(target, cache);
       }
 
       objResults[keyI] = algorithm(search, target, searchLowerCode);

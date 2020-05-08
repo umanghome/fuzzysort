@@ -1,3 +1,5 @@
+import { createCache } from "./cache";
+
 function scoreFn (a) {
   let max = -9007199254740991;
 
@@ -27,12 +29,22 @@ const options = {
   limit: 9007199254740991, // Number.MAX_SAFE_INTEGER?
 
   scoreFn: scoreFn,
+
+  /**
+   * Keys initialized as-needed
+   * - cache
+   */
 };
 
-export function getOptions (instance = {}, custom = {}) {
-  return {
+export function getOptions (custom = {}) {
+  const _options = {
     ...options,
-    ...instance,
-    ...custom
+    ...custom,
   };
+  
+  if (!_options.cache) {
+    _options.cache = createCache();
+  }
+
+  return _options;
 }
