@@ -19,7 +19,7 @@
     "build": "rollup -c",
     "copy-types": "cp src/index.d.ts dist/",
     "dev": "rollup -c -w",
-    "test": "npm run build && node test.js",
+    "test": "npm run build && mocha",
     "build:legacy": "uglifyjs fuzzysort.js -m -c -o fuzzysort.min.js"
   },
   "repository": {
@@ -27,6 +27,8 @@
     "url": "https://github.com/farzher/fuzzysort.git"
   },
   "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^7.1.2",
     "rollup": "^2.7.6"
   }
 }
