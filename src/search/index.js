@@ -14,32 +14,27 @@ export default function go(search, targets, options) {
     return NO_RESULTS;
   }
 
+  const { scoreFn, threshold, limit, algorithm, cache, keys } = getOptions(options);
+  const q = fastpriorityqueue();
+
   search = prepareSearch(search);
 
-  var searchLowerCode = search[0];
-
-  let { scoreFn, threshold, limit, algorithm, cache } = getOptions(options);
+  const searchLowerCode = search[0];
   
-  var resultsCount = 0;
-  var limitedCount = 0;
-  var targetsLen = targets.length;
+  let resultsCount = 0;
+  let limitedCount = 0;
 
-  var q = fastpriorityqueue();
+  for (let i = targets.length - 1; i >= 0; --i) {
+    const obj = targets[i];
 
-  // options.keys
-  var keys = options.keys;
-  var keysLen = keys.length;
-
-  for (var i = targetsLen - 1; i >= 0; --i) {
-    var obj = targets[i];
-    var matches = [];
-    var result = {
+    let matches = [];
+    let result = {
       obj,
     };
 
-    for (var keyI = keysLen - 1; keyI >= 0; --keyI) {
-      var key = keys[keyI];
-      var target = getValue(obj, key);
+    for (let keyI = keys.length - 1; keyI >= 0; --keyI) {
+      const key = keys[keyI];
+      let target = getValue(obj, key);
 
       matches[keyI] = null;
 
@@ -54,7 +49,7 @@ export default function go(search, targets, options) {
       matches[keyI] = algorithm(search, target, searchLowerCode);
     }
 
-    var score = scoreFn(matches);
+    const score = scoreFn(matches);
 
     if (score === null) {
       continue;
@@ -84,9 +79,9 @@ export default function go(search, targets, options) {
     return NO_RESULTS;
   }
 
-  var results = [];
+  let results = [];
 
-  for (var i = resultsCount - 1; i >= 0; --i) {
+  for (let i = resultsCount - 1; i >= 0; --i) {
     results[i] = q.poll();
   }
 
