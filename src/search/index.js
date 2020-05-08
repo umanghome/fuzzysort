@@ -1,8 +1,6 @@
 // @ts-check
 import { prepareSearch, getPrepared } from '../internals/prepare';
 import { getOptions } from '../internals/defaults';
-import algorithmWithTypo from '../algorithm/typo';
-import algorithmWithoutTypo from '../algorithm/no-typo';
 import { getValue, isObj } from '../internals/utils';
 import fastpriorityqueue from '../internals/fastpriorityqueue';
 
@@ -20,9 +18,8 @@ export default function go(search, targets, options) {
 
   var searchLowerCode = search[0];
 
-  let { scoreFn, threshold, limit, allowTypo } = getOptions(options);
-
-  var algorithm = allowTypo ? algorithmWithTypo : algorithmWithoutTypo;
+  let { scoreFn, threshold, limit, algorithm } = getOptions(options);
+  
   var resultsLen = 0;
   var limitedCount = 0;
   var targetsLen = targets.length;
