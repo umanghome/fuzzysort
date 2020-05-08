@@ -9,17 +9,17 @@ const NO_RESULTS = {
   total: 0,
 };
 
-export default function go(search, targets, options) {
-  if (!search) {
+export default function search(term, targets, options) {
+  if (!term) {
     return NO_RESULTS;
   }
 
   const { scoreFn, threshold, limit, algorithm, cache, keys } = getOptions(options);
   const q = fastpriorityqueue();
 
-  search = prepareSearch(search);
+  term = prepareSearch(term);
 
-  const searchLowerCode = search[0];
+  const searchLowerCode = term[0];
   
   let resultsCount = 0;
   let limitedCount = 0;
@@ -46,7 +46,7 @@ export default function go(search, targets, options) {
         target = getPrepared(target, cache);
       }
 
-      matches[keyI] = algorithm(search, target, searchLowerCode);
+      matches[keyI] = algorithm(term, target, searchLowerCode);
     }
 
     const score = scoreFn(matches);
