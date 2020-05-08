@@ -1,5 +1,5 @@
-import go from './search/go';
+import search from './search';
 
 export default {
-  search: go
+  search,
 };
