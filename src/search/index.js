@@ -20,7 +20,7 @@ export default function go(search, targets, options) {
 
   let { scoreFn, threshold, limit, algorithm, cache } = getOptions(options);
   
-  var resultsLen = 0;
+  var resultsCount = 0;
   var limitedCount = 0;
   var targetsLen = targets.length;
 
@@ -32,17 +32,18 @@ export default function go(search, targets, options) {
 
   for (var i = targetsLen - 1; i >= 0; --i) {
     var obj = targets[i];
-    // var objResults = new Array(keysLen);
-    var objResults = {
-      length: keysLen,
+    var matches = [];
+    var result = {
+      obj,
     };
 
     for (var keyI = keysLen - 1; keyI >= 0; --keyI) {
       var key = keys[keyI];
       var target = getValue(obj, key);
 
+      matches[keyI] = null;
+
       if (!target) {
-        objResults[keyI] = null;
         continue;
       }
 
@@ -50,31 +51,47 @@ export default function go(search, targets, options) {
         target = getPrepared(target, cache);
       }
 
-      objResults[keyI] = algorithm(search, target, searchLowerCode);
+      matches[keyI] = algorithm(search, target, searchLowerCode);
     }
 
-    objResults.obj = obj; // before scoreFn so scoreFn can use it
-    var score = scoreFn(objResults);
-    if (score === null) continue;
-    if (score < threshold) continue;
-    objResults.score = score;
-    if (resultsLen < limit) {
-      q.add(objResults);
-      ++resultsLen;
-    } else {
-      ++limitedCount;
-      if (score > q.peek().score) q.replaceTop(objResults);
+    var score = scoreFn(matches);
+
+    if (score === null) {
+      continue;
     }
+    
+    if (score < threshold) {
+      continue;
+    }
+
+    result.score = score;
+
+    if (resultsCount < limit) {
+      q.add(result);
+
+      resultsCount++;
+    } else {
+      limitedCount++;
+
+      if (score > q.peek().score) {
+        q.replaceTop(result);
+      }
+    }
+
   }
 
-  if (resultsLen === 0) return NO_RESULTS;
-  var results = new Array(resultsLen);
-  for (var i = resultsLen - 1; i >= 0; --i) results[i] = q.poll();
+  if (resultsCount === 0) {
+    return NO_RESULTS;
+  }
 
-  console.log(results);
+  var results = [];
+
+  for (var i = resultsCount - 1; i >= 0; --i) {
+    results[i] = q.poll();
+  }
 
   return {
     results,
-    total: resultsLen + limitedCount,
+    total: resultsCount + limitedCount,
   };
 }
