@@ -1,6 +1,3 @@
-const preparedCache = new Map();
-const preparedSearchCache = new Map();
-
 function prepareLowerCodes (str) {
   const strLen = str.length;
   const lower = str.toLowerCase();
@@ -11,7 +8,7 @@ function prepareLowerCodes (str) {
     lowerCodes[i] = lower.charCodeAt(i);
   }
 
-  return lowerCodes
+  return lowerCodes;
 };
 
 function prepareBeginningIndexes(target) {
@@ -80,21 +77,6 @@ export function prepare(target) {
   }; // hidden
 }
 
-export function prepareSlow(target) {
-  if (!target) {
-    return;
-  }
-
-  return {
-    target: target,
-    _targetLowerCodes: prepareLowerCodes(target),
-    _nextBeginningIndexes: prepareNextBeginningIndexes(target),
-    score: null,
-    indexes: null,
-    obj: null,
-  }; // hidden
-}
-
 export function prepareSearch(search) {
   if (!search) {
     return;
@@ -103,7 +85,9 @@ export function prepareSearch(search) {
   return prepareLowerCodes(search);
 }
 
-export function getPrepared(target) {
+export function getPrepared(target, cache) {
+  const preparedCache = cache.prepared;
+
   if (target.length > 999) {
     return prepare(target); // don't cache huge targets
   }
@@ -119,27 +103,4 @@ export function getPrepared(target) {
   preparedCache.set(target, targetPrepared);
 
   return targetPrepared;
-}
-
-export function getPreparedSearch(search) {
-  if (search.length > 999) {
-    return prepareSearch(search); // don't cache huge searches
-  }
-
-  let searchPrepared = preparedSearchCache.get(search);
-
-  if (searchPrepared !== undefined) {
-    return searchPrepared;
-  }
-  
-  searchPrepared = prepareSearch(search);
-
-  preparedSearchCache.set(search, searchPrepared);
-
-  return searchPrepared;
-}
-
-export function clearPreparedCache () {
-  preparedCache.clear();
-  preparedSearchCache.clear();
 }
