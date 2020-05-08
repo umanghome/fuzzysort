@@ -27,10 +27,12 @@
 </div>
 
 <script>
-  ; (function () {
+  (function () {
     const $input = $('#input')
     const $results = $('#results')
     var searchMode = 'Sync'
+
+    const cache = fuzzysort.createCache();
 
     function getSearchLower() { return $input.val().toLowerCase() }
 
@@ -40,7 +42,9 @@
 
       startms = Date.now()
       renderResults(fuzzysort.search(inputValue, window.ALL_BANKS, {
-        keys: ['code', 'name']
+        keys: ['code', 'name'],
+        algorithm: fuzzysort.algorithmWithTypo,
+        cache,
       }));
     }
 
@@ -59,7 +63,7 @@
       console.log({
         results
       });
-
+      
       const duration = Date.now() - startms
       const header = `<p>${results.total} matches in ${duration}ms</p>`
       const html = resultsToHtml(results.results)
