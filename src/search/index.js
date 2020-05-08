@@ -4,14 +4,14 @@ import { getOptions } from '../internals/defaults';
 import { getValue, isObj } from '../internals/utils';
 import fastpriorityqueue from '../internals/fastpriorityqueue';
 
-const noResults = {
+const NO_RESULTS = {
   results: [],
   total: 0,
 };
 
 export default function go(search, targets, options) {
   if (!search) {
-    return noResults;
+    return NO_RESULTS;
   }
 
   search = prepareSearch(search);
@@ -67,7 +67,7 @@ export default function go(search, targets, options) {
     }
   }
 
-  if (resultsLen === 0) return noResults;
+  if (resultsLen === 0) return NO_RESULTS;
   var results = new Array(resultsLen);
   for (var i = resultsLen - 1; i >= 0; --i) results[i] = q.poll();
 
