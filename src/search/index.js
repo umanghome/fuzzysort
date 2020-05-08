@@ -1,7 +1,7 @@
 // @ts-check
 import { prepareSearch, getPrepared } from '../internals/prepare';
 import { getOptions } from '../internals/defaults';
-import { getValue, isObj } from '../internals/utils';
+import { getValue, isObject } from '../internals/utils';
 import fastpriorityqueue from '../internals/fastpriorityqueue';
 
 const NO_RESULTS = {

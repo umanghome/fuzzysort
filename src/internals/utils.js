@@ -24,6 +24,6 @@ export function getValue(obj, prop) {
   return obj;
 }
 
-export function isObj(x) {
+export function isObject(x) {
   return typeof x === 'object';
-} // faster as a function
+}
