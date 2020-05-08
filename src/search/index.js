@@ -9,12 +9,36 @@ const NO_RESULTS = {
   total: 0,
 };
 
+function scoreFn(a) {
+  let max = -9007199254740991;
+
+  for (let i = a.length - 1; i >= 0; --i) {
+    const result = a[i];
+
+    if (result === null) {
+      continue;
+    }
+
+    const score = result.score;
+
+    if (score > max) {
+      max = score;
+    }
+  }
+
+  if (max === -9007199254740991) {
+    return null;
+  }
+
+  return max;
+}
+
 export default function search(term, targets, options) {
   if (!term) {
     return NO_RESULTS;
   }
 
-  const { scoreFn, threshold, limit, algorithm, cache, keys } = getOptions(options);
+  const { threshold, limit, algorithm, cache, keys } = getOptions(options);
   const q = fastpriorityqueue();
 
   term = prepareSearch(term);
