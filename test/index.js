@@ -121,7 +121,7 @@ describe('search', () => {
         threshold: 0
       });
 
-      expect(codeResults.results[0].obj.code).to.equal('SBIN');
+      expect(codeResults.results[0].ref.code).to.equal('SBIN');
 
       const nameResults = search('state bank of india', BANKS, {
         cache,
@@ -131,7 +131,7 @@ describe('search', () => {
         threshold: 0,
       });
 
-      expect(nameResults.results[0].obj.name).to.equal('State Bank of India');
+      expect(nameResults.results[0].ref.name).to.equal('State Bank of India');
     });
   });
 
@@ -145,8 +145,8 @@ describe('search', () => {
         threshold: 0,
       });
 
-      expect(codeResults.results[0].obj.code).to.equal('SBIN');
-      expect(codeResults.results[0].obj.name).to.equal('State Bank of India');
+      expect(codeResults.results[0].ref.code).to.equal('SBIN');
+      expect(codeResults.results[0].ref.name).to.equal('State Bank of India');
 
       const nameResults = search('state bank of india', BANKS, {
         cache,
@@ -156,8 +156,8 @@ describe('search', () => {
         threshold: 0,
       });
 
-      expect(nameResults.results[0].obj.code).to.equal('SBIN');
-      expect(nameResults.results[0].obj.name).to.equal('State Bank of India');
+      expect(nameResults.results[0].ref.code).to.equal('SBIN');
+      expect(nameResults.results[0].ref.name).to.equal('State Bank of India');
     });
   });
 });

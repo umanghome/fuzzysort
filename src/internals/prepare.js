@@ -73,7 +73,7 @@ export function prepare(target) {
     _nextBeginningIndexes: null,
     score: null,
     indexes: null,
-    obj: null,
+    ref: null,
   }; // hidden
 }
 

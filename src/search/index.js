@@ -58,16 +58,16 @@ export default function search(term, targets, options) {
   let limitedCount = 0;
 
   for (let i = targets.length - 1; i >= 0; --i) {
-    const obj = targets[i];
+    const ref = targets[i];
 
     let matches = [];
     let result = {
-      obj,
+      ref,
     };
 
     for (let keyI = keys.length - 1; keyI >= 0; --keyI) {
       const key = keys[keyI];
-      let target = getValue(obj, key);
+      let target = getValue(ref, key);
 
       matches[keyI] = null;
 
