@@ -12,6 +12,7 @@ The original repository describes this as
 > Fast SublimeText-like fuzzy search for JavaScript.
 > Sublime's fuzzy search is... sublime. I wish everything used it. So here's an open source js version.
 
+Demo at [https://umanghome.github.io/fuzzysort/demo.html](https://umanghome.github.io/fuzzysort/demo.html)
 
 # Installation
 
