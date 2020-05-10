@@ -1,174 +1,207 @@
-# [fuzzysort](https://raw.github.com/farzher/fuzzysort/master/fuzzysort.js)
+# Fuzzysort
 
-Fast SublimeText-like fuzzy search for JavaScript.
+> A fuzzy-searching library for JavaScript
 
-Sublime's fuzzy search is... sublime. I wish everything used it. So here's an open source js version.
+This is a fork of [farzher/fuzzysort](https://github.com/farzher/fuzzysort) with some significant changes:
+- Tree-shakable
+- Only synchronous searching
+- No global cache
+- Only works on objects
 
-
-
-## [Demo](https://rawgit.com/farzher/fuzzysort/master/test.html)
-
-https://rawgit.com/farzher/fuzzysort/master/test.html
-
-![](http://i.imgur.com/1M6ZrgS.gif)
-
-
-![](http://i.imgur.com/kdZxnJ0.png)
-
-![](https://i.imgur.com/KOsl1HO.png)
-
-![](http://i.imgur.com/K8KMgcn.png)
-
-![](http://i.imgur.com/PFIp7WR.png)
+The original repository describes this as
+> Fast SublimeText-like fuzzy search for JavaScript.
+> Sublime's fuzzy search is... sublime. I wish everything used it. So here's an open source js version.
 
 
+# Installation
 
-## Installation Node
+## Node
 
 ```sh
-npm install fuzzysort
+npm install @umanghome/fuzzysort
 ```
+
+and use as
+
 ```js
-const fuzzysort = require('fuzzysort')
+const fuzzysort = require('@umanghome/fuzzysort')
 ```
 
+or
 
-## Installation Browser
+```js
+import * as fuzzysort from '@umanghome/fuzzysort');
+```
+
+## Browser
+
+Download and serve [dist/fuzzysort.umd.js](dist/fuzzysort.umd.js)
 
 ```html
-<script src="https://rawgit.com/farzher/fuzzysort/master/fuzzysort.js"></script>
+<script src="fuzzysort.umd.js"></script>
 ```
 
+The library will be available under `window.fuzzysort`
 
-## Most Common Usage
+# Exports 
 
+1. `search` - The core function you will use for searching.
+1. `createCache` - For better performance, you should pass a cache to `search`. This function creates the necessary cache.
+1. `algorithmWithTypo` - You will need to pass an algorithm to `search`. This algorithm allows a mismatch of one character.
+1. `algorithmWithoutTypo` - You will need to pass an algorithm to `search`. This algorithm does not allow a mismatch.
 
-### `fuzzysort.go(search, targets, options=null)`
+# Usage
+
+## `createCache`
 
 ```js
-const mystuff = [{file:'Monitor.cpp'}, {file:'MeshRenderer.cpp'}]
-const results = fuzzysort.go('mr', mystuff, {key:'file'})
-// [{score:-18, obj:{file:'MeshRenderer.cpp'}}, {score:-6009, obj:{file:'Monitor.cpp'}}]
+const cache = createCache();
 ```
 
+A cache can be reused between searches for to gain performance improvement. The recommended way to use a cache using a single cache for different searches across the same `targets`. If the `targets` change entirely, use a different cache. This can translated loosely to mean use the same cache for multiple `term`s across the same `targets`, but a different cache for each `target`.
 
-
-## Usage
-
-
-### `fuzzysort.go(search, targets, options=null)`
+## `search`
 
 ```js
-const results = fuzzysort.go('mr', ['Monitor.cpp', 'MeshRenderer.cpp'])
-// [{score: -18, target: "MeshRenderer.cpp"}, {score: -6009, target: "Monitor.cpp"}]
-```
-
-### `fuzzysort.goAsync(search, targets, options=null)`
-
-```js
-let promise = fuzzysort.goAsync('mr', ['Monitor.cpp', 'MeshRenderer.cpp'])
-promise.then(results => console.log(results))
-if(invalidated) promise.cancel()
-```
-
-##### Options
-
-```js
-fuzzysort.go(search, targets, {
-  threshold: -Infinity, // Don't return matches worse than this (higher is faster)
-  limit: Infinity, // Don't return more results than this (lower is faster)
-  allowTypo: true, // Allwos a snigle transpoes (false is faster)
-
-  key: null, // For when targets are objects (see its example usage)
-  keys: null, // For when targets are objects (see its example usage)
-  scoreFn: null, // For use with `keys` (see its example usage)
+search(
+  term: string, // The search term
+  targets: Array<Object>, // The list of objects to search on
+  keys: Array<string>, // The keys on each object to consider
+  options: Object // Misc. options (see below)
+): ({
+  results: Array<Object>,
+  total: number 
 })
 ```
 
-#### `fuzzysort.highlight(result, open='<b>', close='</b>')`
-
 ```js
-fuzzysort.highlight(fuzzysort.single('tt', 'test'), '*', '*') // *t*es*t*
-```
+options = {
+  algorithm: fuzzysort.algorithmWithTypo, // The algorithm to use
 
-
-## What is a `result`
-
-```js
-const result = fuzzysort.single('query', 'some string that contains my query.')
-// exact match returns a score of 0. lower is worse
-result.score // -59
-result.indexes // [29, 30, 31, 32, 33]
-result.target // some string that contains my query.
-result.obj // reference to your original obj when using options.key
-fuzzysort.highlight(result, '<b>', '</b>') // some string that contains my <b>query</b>.
-```
-
-
-
-## How To Go Fast · Performance Tips
-
-```js
-let targets = [{file:'Monitor.cpp'}, {file:'MeshRenderer.cpp'}]
-
-// filter out targets that you don't need to search! especially long ones!
-targets = targets.filter(t => t.file.length < 1000)
-
-// if your targets don't change often, provide prepared targets instead of raw strings!
-targets.forEach(t => t.filePrepared = fuzzysort.prepare(t.file))
-
-// don't use options.key if you don't need a reference to your original obj
-targets = targets.map(t => t.filePrepared)
-
-const options = {
-  limit: 100, // don't return more results than you need!
-  allowTypo: false, // if you don't care about allowing typos
-  threshold: -10000, // don't return bad results
+  // Optional
+  cache: createdCache, // The cache that is created. See `createCache` usage for details.
+  limit: 10, // The limit of results to return. Picks the top `limit` results. Default: 9007199254740991
+  threshold: -100, // Considers results with a score greater than or equal to `threshold`. Default: -9007199254740991
 }
-fuzzysort.go('gotta', targets, options)
-fuzzysort.go('go', targets, options)
-fuzzysort.go('fast', targets, options)
 ```
 
 
-### Advanced Usage
+`keys` is the list of keys to search on. Nested keys can be represented as `"foo.bar"`. Example: `["name", "contact.phone"]` if your target looks like
+```js
+{
+  name: 'John Doe',
+  contact: {
+    phone: '9988776655'
+  }
+}
+```
 
-Search a list of objects, by multiple fields, with custom weights.
+`search` returns an object with two keys:
+1. `results` - An array of objects of the shape
+```js
+{
+  ref: Object; // Reference to the original object in `targets`
+  score: number; // The score of the match
+}
+```
+
+2. `total` - The total number of matches. This might be different than `results.length` if `options.limit` is used.
+
+3. `meta` - An object containing meta-information for all the matches. It is an object with keys as every key of `keys`. See usage for an example. Each object under `meta[key]` looks like
+```js
+{
+  indices: Array<number> | null; // The indices matched, if at all
+  score: number | null; // The score if we found any matching characters
+  target: string; // The string that we performed the search on
+}
+```
+
+# Example
 
 ```js
-let objects = [{title:'Favorite Color', desc:'Chrome'}, {title:'Google Chrome', desc:'Launch Chrome'}]
-let results = fuzzysort.go('chr', objects, {
-  keys: ['title', 'desc'],
-  // Create a custom combined score to sort by. -100 to the desc score makes it a worse match
-  scoreFn(a) => Math.max(a[0]?a[0].score:-1000, a[1]?a[1].score-100:-1000)
-})
+const Banks = [
+  {
+    "code": "HDFC",
+    "name": "HDFC Bank"
+  },
+  {
+    "code": "ICIC",
+    "name": "ICICI Bank"
+  },
+  {
+    "code": "IOBA",
+    "name": "Indian Overseas Bank"
+  },
+  {
+    "code": "SBIN",
+    "name": "State Bank of India"
+  },
+  {
+    "code": "UBIN",
+    "name": "Union Bank of India"
+  },
+];
 
-var bestResult = results[0]
-// When using multiple `keys`, results are different. They're indexable to get each normal result
-fuzzysort.highlight(bestResult[0]) // 'Google <b>Chr</b>ome'
-fuzzysort.highlight(bestResult[1]) // 'Launch <b>Chr</b>ome'
-bestResult.obj.title // 'Google Chrome'
+const cache = fuzzysort.createCache();
+
+const results = fuzzysort.search('india', Banks, ['name'], {
+  algorithm: fuzzysort.algorithmWithTypo,
+  cache: cache,
+  limit: 2,
+});
+
+console.log(results);
 ```
 
-Multiple instances, each with different default options.
+will log
 
 ```js
-const strictsort = fuzzysort.new({threshold: -999})
+{
+  "results": [
+    {
+      "ref": {
+        "code": "IOBA",
+        "name": "Indian Overseas Bank"
+      },
+      "meta": {
+        "name": {
+          "indices": [0, 1, 2, 3, 4],
+          "score": -15,
+          "target": "Indian Overseas Bank"
+        }
+      },
+      "score": -15
+    },
+    {
+      "ref": {
+        "code": "SBIN",
+        "name": "State Bank of India"
+      },
+      "meta": {
+        "name": {
+          "indices": [14, 15, 16, 17, 18],
+          "score": -28,
+          "target": "State Bank of India"
+        }
+      },
+      "score": -28
+    }
+  ],
+  "total": 3
+}
 ```
 
+# TODO
 
-### Changelog
+- [ ] Document how to highlight
+- [ ] Allow and document custom `scoreFn`
+- [ ] Add tests for `algorithmWithTypo`
+- [ ] Add tests for `algorithmWithoutTypo`
+- [ ] Modernize `algorithmWithTypo`
+- [ ] Modernize `algorithmWithoutTypo`
+- [ ] Fix and add types
+- [ ] Maybe migrate to TypeScript
 
-#### v1.1.0
-- Added `allowTypo` as an option
+# License
 
-#### v1.0.0
-
-- Inverted scores; they're now negative instead of positive, so that higher scores are better
-- Added ability to search objects by `key`/`keys` with custom weights
-- Removed the option to automatically highlight and exposed `fuzzysort.highlight`
-- Removed all options from `fuzzysort` and moved them into `fuzzysort.go` optional params
-
-#### v0.x.x
-
-- init
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
