@@ -1,15 +1,13 @@
 {
-  "name": "fuzzysort",
-  "version": "1.1.4",
-  "description": "Fast SublimeText-like fuzzy search for JavaScript",
+  "name": "umanghome",
+  "version": "0.0.1",
+  "description": "Fuzzy-search library for JavaScript",
   "keywords": [
     "fuzzy",
     "search",
-    "filter",
-    "javascript",
-    "sublime"
+    "javascript"
   ],
-  "author": "farzher",
+  "author": "Umang Galaiya <umanghome@gmail.com> (https://umanggalaiya.in/)",
   "license": "MIT",
   "main": "dist/fuzzysort.cjs.js",
   "module": "dist/fuzzysort.esm.js",
@@ -22,7 +20,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/farzher/fuzzysort.git"
+    "url": "https://github.com/umanghome/fuzzysort.git"
   },
   "devDependencies": {
     "chai": "^4.2.0",
