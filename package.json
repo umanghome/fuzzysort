@@ -1,7 +1,7 @@
 {
   "name": "umanghome",
   "version": "0.0.1",
-  "description": "Fuzzy-search library for JavaScript",
+  "description": "A fuzzy-searching library for JavaScript",
   "keywords": [
     "fuzzy",
     "search",
