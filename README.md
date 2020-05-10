@@ -112,7 +112,7 @@ options = {
 - `results` - An array of objects of the shape
 ```js
 {
-  ref: Object; // Reference to the original object in `targets`
+  ref: Object; // Reference to the original object in `targets`. Equality check will work since this is an object ref.
   score: number; // The score of the match
 }
 ```
