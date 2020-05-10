@@ -47,6 +47,7 @@ The library will be available under `window.fuzzysort`
 
 1. `search` - The core function you will use for searching.
 1. `createCache` - For better performance, you should pass a cache to `search`. This function creates the necessary cache.
+1. `clearCache` - Clears the cache returned by `createCache`. Should be called when you're done searching.
 1. `algorithmWithTypo` - You will need to pass an algorithm to `search`. This algorithm allows a mismatch of one character.
 1. `algorithmWithoutTypo` - You will need to pass an algorithm to `search`. This algorithm does not allow a mismatch.
 
@@ -59,6 +60,14 @@ const cache = createCache();
 ```
 
 A cache can be reused between searches for to gain performance improvement. The recommended way to use a cache using a single cache for different searches across the same `targets`. If the `targets` change entirely, use a different cache. This can translated loosely to mean use the same cache for multiple `term`s across the same `targets`, but a different cache for each `target`.
+
+## `clearCache`
+
+```js
+clearCache(cache);
+```
+
+It's a good idea to free up memory when you know no further searches will be made using the `cache`. The unmount lifecycle hook of your UI component is a good place to use this.
 
 ## `search`
 
@@ -149,6 +158,8 @@ const results = fuzzysort.search('india', Banks, ['name'], {
   cache: cache,
   limit: 2,
 });
+
+fuzzysort.clearCache(cache);
 
 console.log(results);
 ```

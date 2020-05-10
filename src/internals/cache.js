@@ -3,3 +3,7 @@ export function createCache () {
     prepared: new Map(),
   };
 }
+
+export function clearCache (cache) {
+  cache.prepared.clear();
+}

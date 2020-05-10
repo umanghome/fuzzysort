@@ -110,6 +110,10 @@ function createCache () {
   };
 }
 
+function clearCache (cache) {
+  cache.prepared.clear();
+}
+
 const options = {
   threshold: -9007199254740991,
   limit: 9007199254740991, // Number.MAX_SAFE_INTEGER
@@ -244,9 +248,7 @@ function search(term, targets, keys, options) {
         target = getPrepared(target, cache);
       }
 
-      const match = algorithm(term, target, searchLowerCode);
-
-      matches[keyI] = match;
+      matches[keyI] = algorithm(term, target, searchLowerCode);
 
       result.meta[key] = {
         indices: target.indexes,
@@ -532,4 +534,4 @@ function algorithmWithTypo(searchLowerCodes, prepared, searchLowerCode) {
   }
 }
 
-export { algorithmWithTypo, algorithmWithoutTypo, createCache, search };
+export { algorithmWithTypo, algorithmWithoutTypo, clearCache, createCache, search };
