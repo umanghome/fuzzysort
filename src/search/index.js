@@ -63,6 +63,7 @@ export default function search(term, targets, keys, options) {
     let matches = [];
     let result = {
       ref,
+      meta: {},
     };
 
     for (let keyI = keys.length - 1; keyI >= 0; --keyI) {
@@ -80,6 +81,12 @@ export default function search(term, targets, keys, options) {
       }
 
       matches[keyI] = algorithm(term, target, searchLowerCode);
+
+      result.meta[key] = {
+        indices: target.indexes,
+        score: target.score,
+        target: target.target,
+      };
     }
 
     const score = scoreFn(matches);

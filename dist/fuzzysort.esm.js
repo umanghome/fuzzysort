@@ -227,6 +227,7 @@ function search(term, targets, keys, options) {
     let matches = [];
     let result = {
       ref,
+      meta: {},
     };
 
     for (let keyI = keys.length - 1; keyI >= 0; --keyI) {
@@ -243,7 +244,15 @@ function search(term, targets, keys, options) {
         target = getPrepared(target, cache);
       }
 
-      matches[keyI] = algorithm(term, target, searchLowerCode);
+      const match = algorithm(term, target, searchLowerCode);
+
+      matches[keyI] = match;
+
+      result.meta[key] = {
+        indices: target.indexes,
+        score: target.score,
+        target: target.target,
+      };
     }
 
     const score = scoreFn(matches);
