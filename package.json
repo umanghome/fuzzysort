@@ -14,13 +14,11 @@
   "main": "dist/fuzzysort.cjs.js",
   "module": "dist/fuzzysort.esm.js",
   "browser": "dist/fuzzysort.umd.js",
-  "type": "dist/index.d.ts",
   "scripts": {
     "build": "rollup -c",
     "copy-types": "cp src/index.d.ts dist/",
     "dev": "rollup -c -w",
-    "test": "npm run build && mocha",
-    "build:legacy": "uglifyjs fuzzysort.js -m -c -o fuzzysort.min.js"
+    "test": "npm run build && mocha"
   },
   "repository": {
     "type": "git",
