@@ -46,11 +46,11 @@ The library will be available under `window.fuzzysort`
 
 # Exports 
 
-1. `search` - The core function you will use for searching.
-1. `createCache` - For better performance, you should pass a cache to `search`. This function creates the necessary cache.
-1. `clearCache` - Clears the cache returned by `createCache`. Should be called when you're done searching.
-1. `algorithmWithTypo` - You will need to pass an algorithm to `search`. This algorithm allows a mismatch of one character.
-1. `algorithmWithoutTypo` - You will need to pass an algorithm to `search`. This algorithm does not allow a mismatch.
+- `search` - The core function you will use for searching.
+- `createCache` - For better performance, you should pass a cache to `search`. This function creates the necessary cache.
+- `clearCache` - Clears the cache returned by `createCache`. Should be called when you're done searching.
+- `algorithmWithTypo` - You will need to pass an algorithm to `search`. This algorithm allows a mismatch of one character.
+- `algorithmWithoutTypo` - You will need to pass an algorithm to `search`. This algorithm does not allow a mismatch.
 
 # Usage
 
@@ -107,7 +107,7 @@ options = {
 ```
 
 `search` returns an object with two keys:
-1. `results` - An array of objects of the shape
+- `results` - An array of objects of the shape
 ```js
 {
   ref: Object; // Reference to the original object in `targets`
@@ -115,9 +115,9 @@ options = {
 }
 ```
 
-2. `total` - The total number of matches. This might be different than `results.length` if `options.limit` is used.
+- `total` - The total number of matches. This might be different than `results.length` if `options.limit` is used.
 
-3. `meta` - An object containing meta-information for all the matches. It is an object with keys as every key of `keys`. See usage for an example. Each object under `meta[key]` looks like
+- `meta` - An object containing meta-information for all the matches. It is an object with keys as every key of `keys`. See usage for an example. Each object under `meta[key]` looks like
 ```js
 {
   indices: Array<number> | null; // The indices matched, if at all
