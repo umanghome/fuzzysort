@@ -25,13 +25,13 @@ npm install @umanghome/fuzzysort
 and use as
 
 ```js
-const fuzzysort = require('@umanghome/fuzzysort')
+const fuzzysort = require('@umanghome/fuzzysort');
 ```
 
 or
 
 ```js
-import * as fuzzysort from '@umanghome/fuzzysort');
+import * as fuzzysort from '@umanghome/fuzzysort';
 ```
 
 ## Browser
