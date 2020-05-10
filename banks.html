@@ -41,8 +41,7 @@
       const inputValue = getSearchLower()
 
       startms = Date.now()
-      renderResults(fuzzysort.search(inputValue, window.ALL_BANKS, {
-        keys: ['code', 'name'],
+      renderResults(fuzzysort.search(inputValue, window.ALL_BANKS, ['code', 'name'], {
         algorithm: fuzzysort.algorithmWithTypo,
         cache,
       }));

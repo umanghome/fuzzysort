@@ -27,34 +27,33 @@ describe('search', () => {
   describe('throws errors', () => {
     it('when `algorithm` is not provided', () => {
       expect(() => {
-        search('state', BANKS, { cache, keys: ['code', 'name'] });
+        search('state', BANKS, ['code', 'name'], { cache });
       }).to.throw('`algorithm` should be a function');
     });
 
     it('when `algorithm` is not a function', () => {
       expect(() => {
-        search('state', BANKS, { cache, keys: ['code', 'name'], algorithm: 1 });
+        search('state', BANKS, ['code', 'name'], { cache, algorithm: 1 });
       }).to.throw('`algorithm` should be a function');
     });
 
     it('when `keys` is not provided', () => {
       expect(() => {
-        search('state', BANKS, { cache, algorithm: algorithmWithTypo });
+        search('state', BANKS, null, { cache, algorithm: algorithmWithTypo });
       }).to.throw('`keys` should be an array with at least one item');
     });
 
     it('when `keys` is not an array', () => {
       expect(() => {
-        search('state', BANKS, { cache, algorithm: algorithmWithTypo, keys: 1 });
+        search('state', BANKS, 1, { cache, algorithm: algorithmWithTypo });
       }).to.throw('`keys` should be an array with at least one item');
     });
 
     it('when `keys` is an empty array', () => {
       expect(() => {
-        search('state', BANKS, {
+        search('state', BANKS, [], {
           cache,
           algorithm: algorithmWithTypo,
-          keys: [],
         });
       }).to.throw('`keys` should be an array with at least one item');
     });
@@ -62,10 +61,9 @@ describe('search', () => {
 
   describe('`threshold` key', () => {
     it('is respected when provided', () => {
-      const results = search('state', BANKS, {
+      const results = search('state', BANKS, ['code', 'name'], {
         cache,
 
-        keys: ['code', 'name'],
         algorithm: algorithmWithoutTypo,
         threshold: -100,
       });
@@ -74,10 +72,9 @@ describe('search', () => {
     });
 
     it('is works without being provided', () => {
-      const results = search('state', BANKS, {
+      const results = search('state', BANKS, ['code', 'name'], {
         cache,
 
-        keys: ['code', 'name'],
         algorithm: algorithmWithoutTypo,
       });
 
@@ -87,10 +84,9 @@ describe('search', () => {
 
   describe('`limit` key', () => {
     it('is respected when provided', () => {
-      const results = search('state', BANKS, {
+      const results = search('state', BANKS, ['code', 'name'], {
         cache,
 
-        keys: ['code', 'name'],
         algorithm: algorithmWithoutTypo,
         limit: 3,
       });
@@ -100,10 +96,9 @@ describe('search', () => {
     });
 
     it('is works without being provided', () => {
-      const results = search('state', BANKS, {
+      const results = search('state', BANKS, ['code', 'name'], {
         cache,
 
-        keys: ['code', 'name'],
         algorithm: algorithmWithoutTypo,
       });
 
@@ -113,20 +108,18 @@ describe('search', () => {
 
   describe('works with single key', () => {
     it('gets proper result with the given key', () => {
-      const codeResults = search('sbin', BANKS, {
+      const codeResults = search('sbin', BANKS, ['code'], {
         cache,
 
-        keys: ['code'],
         algorithm: algorithmWithoutTypo,
         threshold: 0
       });
 
       expect(codeResults.results[0].ref.code).to.equal('SBIN');
 
-      const nameResults = search('state bank of india', BANKS, {
+      const nameResults = search('state bank of india', BANKS, ['name'], {
         cache,
 
-        keys: ['name'],
         algorithm: algorithmWithoutTypo,
         threshold: 0,
       });
@@ -137,10 +130,9 @@ describe('search', () => {
 
   describe('works with multiple keys', () => {
     it('gets proper result with the given keys', () => {
-      const codeResults = search('sbin', BANKS, {
+      const codeResults = search('sbin', BANKS, ['code', 'name'], {
         cache,
 
-        keys: ['code', 'name'],
         algorithm: algorithmWithoutTypo,
         threshold: 0,
       });
@@ -148,10 +140,9 @@ describe('search', () => {
       expect(codeResults.results[0].ref.code).to.equal('SBIN');
       expect(codeResults.results[0].ref.name).to.equal('State Bank of India');
 
-      const nameResults = search('state bank of india', BANKS, {
+      const nameResults = search('state bank of india', BANKS, ['code', 'name'], {
         cache,
 
-        keys: ['code', 'name'],
         algorithm: algorithmWithoutTypo,
         threshold: 0,
       });

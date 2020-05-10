@@ -201,12 +201,12 @@ function scoreFn(a) {
   return max;
 }
 
-function search(term, targets, options) {
+function search(term, targets, keys, options) {
   if (!term) {
     return NO_RESULTS;
   }
 
-  const { threshold, limit, algorithm, cache, keys } = getOptions(options);
+  const { threshold, limit, algorithm, cache } = getOptions(options);
 
   if (typeof algorithm !== 'function') {
     throw new Error('`algorithm` should be a function');
