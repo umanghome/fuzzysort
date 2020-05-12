@@ -1,9 +1,10 @@
 export function createCache () {
   return {
-    prepared: new Map(),
+    cache: {
+      prepared: new Map(),
+    },
+    clear: function () {
+      this.cache.prepared.clear();
+    }
   };
-}
-
-export function clearCache (cache) {
-  cache.prepared.clear();
 }

@@ -106,12 +106,13 @@ function getPrepared(target, cache) {
 
 function createCache () {
   return {
-    prepared: new Map(),
+    cache: {
+      prepared: new Map(),
+    },
+    clear: function () {
+      this.cache.prepared.clear();
+    }
   };
-}
-
-function clearCache (cache) {
-  cache.prepared.clear();
 }
 
 const options = {
@@ -245,7 +246,7 @@ function search(term, targets, keys, options) {
       }
 
       if (!isObject(target)) {
-        target = getPrepared(target, cache);
+        target = getPrepared(target, cache.cache);
       }
 
       matches[keyI] = algorithm(term, target, searchLowerCode);
@@ -534,4 +535,4 @@ function algorithmWithTypo(searchLowerCodes, prepared, searchLowerCode) {
   }
 }
 
-export { algorithmWithTypo, algorithmWithoutTypo, clearCache, createCache, search };
+export { algorithmWithTypo, algorithmWithoutTypo, createCache, search };

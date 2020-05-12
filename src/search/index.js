@@ -77,7 +77,7 @@ export default function search(term, targets, keys, options) {
       }
 
       if (!isObject(target)) {
-        target = getPrepared(target, cache);
+        target = getPrepared(target, cache.cache);
       }
 
       matches[keyI] = algorithm(term, target, searchLowerCode);

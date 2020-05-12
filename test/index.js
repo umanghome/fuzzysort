@@ -16,9 +16,27 @@ describe('createCache', () => {
   });
 
   it('has the `prepared` cache as a Map', () => {
-    expect(cache.prepared).to.not.be.undefined;
-    expect(cache.prepared).to.be.an.instanceOf(Map);
+    expect(cache.cache.prepared).to.not.be.undefined;
+    expect(cache.cache.prepared).to.be.an.instanceOf(Map);
   });
+
+  it('has a `clear` function', () => {
+    expect(cache.clear).to.be.a('function');
+  });
+
+  it('`clear` works', () => {
+    expect(cache.cache.prepared.size).to.equal(0);
+
+    cache.cache.prepared.set('foo', 'bar');
+
+    expect(cache.cache.prepared.size).to.equal(1);
+
+    cache.clear();
+
+    expect(cache.cache.prepared.size).to.equal(0);
+  });
+
+
 });
 
 describe('search', () => {
