@@ -3,6 +3,9 @@
 > A fuzzy-searching library for JavaScript
 
 [![Build Status](https://travis-ci.com/umanghome/fuzzysort.svg?branch=master)](https://travis-ci.com/umanghome/fuzzysort)
+[![Bundle size](https://img.shields.io/bundlephobia/minzip/@umanghome/fuzzysort)](https://bundlephobia.com/result?p=@umanghome/fuzzysort)
+[![npm](https://img.shields.io/npm/v/@umanghome/fuzzysort)](https://www.npmjs.com/package/@umanghome/fuzzysort)
+
 
 This is a fork of [farzher/fuzzysort](https://github.com/farzher/fuzzysort) with some significant changes:
 - Tree-shakable
