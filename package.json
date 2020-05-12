@@ -1,5 +1,5 @@
 {
-  "name": "umanghome",
+  "name": "@umanghome/fuzzysort",
   "version": "0.0.1",
   "description": "A fuzzy-searching library for JavaScript",
   "keywords": [
