@@ -66,6 +66,10 @@ A cache can be reused between searches for to gain performance improvement. The 
 It's a good idea to free up memory when you know no further searches will be made using the `cache`. To clear all the internal caches, use
 
 ```js
+const cache = fuzzysort.createCache();
+
+// Do stuff
+
 cache.clear();
 ```
 
